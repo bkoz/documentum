@@ -80,3 +80,41 @@ DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READ
 ```oc new-app dacentos -p DOCBROKER_IP={DOCBROKER_IP}```
 
 ```oc rollout latest dc/dacentos```
+
+### Notes
+
+#### Lack of entropy work around
+
+The content server installtion scripts try to run ```rngd -b -r /dev/urandom -o /dev/random``` to increase the kernel entropy. As far as I
+can tell, this requires full container privileges. I've tried the
+following work arounds in OpenShift.
+
+1) Pin all pods in the project to a given host by patching the 
+deployment configuration then run ```rngd``` on that host. I've confirmed this works.
+
+```
+oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=ocpnode-1.fortnebula.com"}}}'
+```
+
+2) Add the ```privileged scc``` to the project. This also requires a patch to the deployment configuration. Until I work out the patch
+command, the changes to the yaml are:
+
+```
+spec:
+      containers:
+      - image: 172.30.23.146:5000/documentum/myapp@sha256:46f4312ecef330ab4d28ccc6f18e5f72318349148da15f4dccc61f84f34f0723
+        imagePullPolicy: Always
+        name: myapp
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+```
+
