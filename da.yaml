@@ -82,6 +82,12 @@ objects:
           name: da_centos:7.3.0000.0074
           namespace: bkttest
       type: ImageChange
+  parameters:
+  - name: DOCBROKER_IP
+    displayName: DocBroker Pod IP
+    description: IP Address of the Content Server pod
+    value: NULL
+    required: true
   status:
     availableReplicas: 0
     latestVersion: 0
