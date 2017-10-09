@@ -1,7 +1,10 @@
 # How I deployed OpenText Documentum on OpenShift
 ## This represents my notes from a project and is not a supported document from Red Hat, Inc. or OpenText.
 ### Creating the OpenShift project
-```oc new-project documentum```
+```
+oc new-project documentum
+oc adm policy add-scc-to-user anyuid -z default -n documentum
+```
 
 ### Creating the postgresql database
 
