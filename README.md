@@ -1,4 +1,4 @@
-# How I deployed OpenText Documentum on OpenShift (not complete - work in progress)
+# How I deployed OpenText Documentum on OpenShift (not complete nor tested - definitely a work in progress)
 ## This represents my notes from a project and is not a supported document from Red Hat, Inc. or OpenText.
 ### Create the OpenShift project
 ```
@@ -47,8 +47,11 @@ Once the postgresql pod is ready, a directory with the proper permissions must b
 PG_POD_NAME=`oc get pods --selector=app=postgres --output=custom-columns=NAME:.metadata.name --no-headers`
 
 oc rsh $PG_POD_NAME mkdir /var/lib/postgresql/data/db_centdb_dat.dat
+
 oc rsh $PG_POD_NAME chown -R postgres:postgres /var/lib/postgresql/data/db_centdb_dat.dat
+
 oc rsh $PG_POD_NAME chmod 777 /var/lib/postgresql/data/db_centdb_dat.dat
+
 oc rsh $PG_POD_NAME ls -ld /var/lib/postgresql/data/db_centdb_dat.dat
 ```
 
@@ -69,7 +72,10 @@ oc rollout latest dc/documentum
 
 ```
 oc create -f da.yaml
+
 DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READY:.status.podIP --no-headers`
+
 oc new-app dacentos -p DOCBROKER_IP={DOCBROKER_IP}
+
 oc rollout latest dc/dacentos
 ```
