@@ -66,3 +66,10 @@ oc rollout latest dc/documentum
 ```
 
 #### Create the DA Server
+
+```
+oc create -f da.yaml
+DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READY:.status.podIP --no-headers`
+oc new-app dacentos -p DOCBROKER_IP={DOCBROKER_IP}
+oc rollout latest dc/dacentos
+```
