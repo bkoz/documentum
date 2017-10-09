@@ -1,4 +1,4 @@
-# How I deployed OpenText Documentum on OpenShift
+# How I deployed OpenText Documentum on OpenShift (not complete - work in progress)
 ## This represents my notes from a project and is not a supported document from Red Hat, Inc. or OpenText.
 ### Create the OpenShift project
 ```
