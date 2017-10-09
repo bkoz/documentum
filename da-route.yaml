@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: dacentos
+objects:
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    name: dacentos
+  spec:
+    host: dacentos-documentum.apps.fortnebula.com
+    path: /da
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: dacentos
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2017-10-09T18:41:52Z
+        status: "True"
+        type: Admitted
+      host: dacentos-documentum.apps.fortnebula.com
+      routerName: router
+      wildcardPolicy: None

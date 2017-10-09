@@ -1,0 +1,173 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: documentum
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: documentum
+    name: documentum
+  spec:
+    replicas: 1
+    selector:
+      app: documentum
+      deploymentconfig: documentum
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: documentum
+          deploymentconfig: documentum
+      spec:
+        containers:
+        - env:
+          - name: AEK_ALGORITHM
+            value: AES_256_CBC
+          - name: AEK_NAME
+            value: CSaek
+          - name: AEK_PASSPHRASE
+            value: password
+          - name: APP_SERVER_ADMIN_PASSWORD
+            value: jboss
+          - name: APP_SERVER_MGMNT_PORT
+            value: "9084"
+          - name: BOF_REGISTRY_USER_PASSWORD
+            value: password
+          - name: CONFIGURE_THUMBNAIL_SERVER
+            value: "NO"
+          - name: CONTAINER_HOSTNAME
+            value: documentum
+          - name: CONTAINER_NAME
+            value: documentum
+          - name: CONTENTSERVER_PORT
+            value: "50000"
+          - name: CONTENT_SERVER_PORT
+            value: "50000"
+          - name: DB_SERVER_PORT
+            value: "5432"
+          - name: DOCBASE_ID
+            value: "45321"
+          - name: DOCBASE_NAME
+            value: centdb
+          - name: DOCBROKER_PORT
+            value: "1689"
+          - name: DOCKER_PLUGIN_TYPE
+            value: local
+          - name: ENABLE_LOCKBOX
+            value: "true"
+          - name: EXTDOCBROKERPORT
+            value: "1689"
+          - name: EXTERNALDB_ADMIN_PASSWORD
+            value: password
+          - name: EXTERNALDB_ADMIN_USER
+            value: postgres
+          - name: EXTERNALDB_IP
+            value: ${EXTERNALDB_IP}
+          - name: EXTERNAL_IP
+            value: ${EXTERNAL_IP}
+          - name: INDEXSPACE_NAME
+            value: dm_repo_docbase
+          - name: INSTALL_HOME
+            value: /opt
+          - name: INSTALL_OWNER_PASSWORD
+            value: password
+          - name: INSTALL_OWNER_USER
+            value: dmadmin
+          - name: JBOSS
+            value: wildfly9.0.1
+          - name: LOCKBOX_FILE_NAME
+            value: lockbox.lb
+          - name: LOCKBOX_PASSPHRASE
+            value: Password@123
+          - name: METHOD_SVR_PORT
+            value: "9080"
+          - name: PRODUCT_MAJOR_VERSION
+            value: "7.3"
+          - name: REPOSITORY_PASSWORD
+            value: password
+          - name: ROOT_USER_PASSWORD
+            value: password
+          - name: SNAPLOCKSTORE_LICENSE
+            value: LDNAPJEWPXQ
+          - name: THUMBNAIL_SERVER_PORT
+            value: "8081"
+          - name: USE_EXISTING_AEK_LOCKBOX
+            value: "false"
+          - name: USE_EXISTING_DATABASE_ACCOUNT
+            value: "false"
+          image: 172.30.23.146:5000/documentum/contentserver_centos
+          imagePullPolicy: IfNotPresent
+          name: documentum
+          ports:
+          - containerPort: 8489
+            protocol: TCP
+          - containerPort: 9081
+            protocol: TCP
+          - containerPort: 9082
+            protocol: TCP
+          - containerPort: 50001
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 1690
+            protocol: TCP
+          - containerPort: 8490
+            protocol: TCP
+          - containerPort: 9080
+            protocol: TCP
+          - containerPort: 50000
+            protocol: TCP
+          - containerPort: 8081
+            protocol: TCP
+          - containerPort: 1689
+            protocol: TCP
+          - containerPort: 9084
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - documentum
+        from:
+          kind: ImageStreamTag
+          name: contentserver_centos:7.3.0000.0214
+          namespace: documentum
+      type: ImageChange
+parameters:
+  - name: EXTERNALDB_IP
+    displayName: External Database Pod IP
+    description: IP Address of postgres pod
+    value: NULL
+    required: true
+  - name: EXTERNAL_IP
+    displayName: External Container host IP
+    description: IP Address of the container host
+    value: NULL
+    required: true
