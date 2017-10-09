@@ -97,8 +97,9 @@ oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node
 ```
 
 2) Add the ```privileged scc``` to the project. This also requires a patch to the deployment configuration. Until I work out the patch
-command, the changes to the yaml are:
+command, the command and changes to the yaml are:
 
+```oc oadm policy add-scc-to-user privileged -z default -n documentum```
 ```
 spec:
       containers:
