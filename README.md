@@ -15,9 +15,23 @@ to the OpenShift registry. This will create the necessary OpenShift image stream
 ```
 docker load -i Contentserver_Centos.tar
 docker load -i Documentum_Adminstrator_Centos.tar
-docker tag ...
-docker login ...
-docker push ...
+
+docker login -u user -p token docker-registry-default.apps.fortnebula.com
+
+docker tag 93ca8e54e48e docker-registry-default.apps.fortnebula.com/bkttest/contentserver_centos:7.3.0000.0214
+docker push docker-registry-default.apps.fortnebula.com/bkttest/contentserver_centos:7.3.0000.0214
+
+docker tag 942c0df3f583 docker-registry-default.apps.fortnebula.com/bktest/da_centos:7.3.0000.0074
+docker push docker-registry-default.apps.fortnebula.com/bktest/da_centos:7.3.0000.0074
+```
+Confirm the image stream were created.
+
+```
+oc get is
+NAME                   DOCKER REPO                                       TAGS            UPDATED
+contentserver_centos   172.30.23.146:5000/bkttest/contentserver_centos   7.3.0000.0214   3 minutes ago
+da_centos              172.30.23.146:5000/bkttest/da_centos              7.3.0000.0074   44 seconds ago
+postgres               172.30.23.146:5000/bkttest/postgres               9.6.1           43 minutes ago
 ```
 
 #### Create the postgresql database
