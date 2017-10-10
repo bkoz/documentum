@@ -5,9 +5,7 @@
 ### Create the OpenShift project and grant privileges
 ```
 PROJ=documentum
-
 oc new-project $PROJ
-
 oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 ```
 ### Create the applications.
@@ -20,10 +18,12 @@ OpenShift image streams. Here is an example.
 
 ```REG_HOST=docker-registry-default.apps.fortnebula.com```
 
-```docker load -i Contentserver_Centos.tar```
-```docker login -u user -p token $REG_HOST```
-```docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214```
-```docker push $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214```
+```
+docker load -i Contentserver_Centos.tar
+docker login -u user -p token $REG_HOST
+docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
+docker push $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
+```
 
 
 Confirm the image streams were created.
@@ -54,22 +54,21 @@ Create a directory with the proper ownership and permissions.
 PG_POD_NAME=`oc get pods --selector=app=postgres --output=custom-columns=NAME:.metadata.name --no-headers`
 ```
 
-```oc rsh $PG_POD_NAME mkdir /var/lib/postgresql/data/db_centdb_dat.dat```
-
-```oc rsh $PG_POD_NAME chown -R postgres:postgres /var/lib/postgresql/data/db_centdb_dat.dat```
-
-```oc rsh $PG_POD_NAME chmod 777 /var/lib/postgresql/data/db_centdb_dat.dat```
-
-```oc rsh $PG_POD_NAME ls -ld /var/lib/postgresql/data/db_centdb_dat.dat```
-
+```
+oc rsh $PG_POD_NAME mkdir /var/lib/postgresql/data/db_centdb_dat.dat
+oc rsh $PG_POD_NAME chown -R postgres:postgres /var/lib/postgresql/data/db_centdb_dat.dat
+oc rsh $PG_POD_NAME chmod 777 /var/lib/postgresql/data/db_centdb_dat.dat
+oc rsh $PG_POD_NAME ls -ld /var/lib/postgresql/data/db_centdb_dat.dat
+```
 #### Create the Content Server
 
 ```
 PG_POD_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY:.status.podIP --no-headers`
 ```
-```oc create -f cs.yaml```
-
-```oc new-app documentum -p EXTERNALDB_IP=$PG_POD_IP -p EXTERNAL_IP=127.0.0.1```
+```
+oc create -f cs.yaml
+oc new-app documentum -p EXTERNALDB_IP=$PG_POD_IP -p EXTERNAL_IP=127.0.0.1
+```
 
 #### Create the DA Server
 
