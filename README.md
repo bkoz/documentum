@@ -1,8 +1,8 @@
 # How I deployed OpenText Documentum on OpenShift 
 
-## This README is not fully proof read - definitely a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. nor OpenText, Inc.
+## This README is a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. nor OpenText, Inc.
 
-### Create the OpenShift project and grant privileges
+### Create the OpenShift project and grant it the ```anyuid``` scc.
 ```
 PROJ=documentum
 oc new-project $PROJ
