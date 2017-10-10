@@ -4,7 +4,7 @@
 
 ### Create the OpenShift project and grant it's default service account the```anyuid```scc.
 
-All ```oc adm``` commands need to be run by the OpenShift cluster administrator.
+All```oc adm```commands need to be run by the OpenShift cluster administrator.
 
 ```
 PROJ=documentum
