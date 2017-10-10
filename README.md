@@ -3,6 +3,9 @@
 ## This README is a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. nor OpenText, Inc.
 
 ### Create the OpenShift project and grant it's default service account the```anyuid```scc.
+
+All ```oc adm``` commands need to be run by the OpenShift cluster administrator.
+
 ```
 PROJ=documentum
 oc new-project $PROJ
@@ -26,9 +29,10 @@ and push the Documentum images to the OpenShift registry. This will create the n
 OpenShift image streams. Here is an example.
 
 ```
+MYTOKEN=`oc whoami -t`
 REG_HOST=docker-registry-default.apps.fortnebula.com
 docker load -i Contentserver_Centos.tar
-docker login -u user -p token $REG_HOST
+docker login -u user -p $MYTOKEN $REG_HOST
 docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
 docker push $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
 ```
