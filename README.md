@@ -4,6 +4,8 @@
 
 ### Create the OpenShift project and grant privileges
 ```
+PROJ=documentum
+
 oc new-project documentum
 
 oc adm policy add-scc-to-user anyuid -z default -n documentum
@@ -15,19 +17,21 @@ oc adm policy add-scc-to-user anyuid -z default -n documentum
 Using an external Docker client, load, tag and push the Documentum images
 to the OpenShift registry. This will create the necessary OpenShift image streams.
 
+```REG_HOST=docker-registry-default.apps.fortnebula.com```
+
 ```docker load -i Contentserver_Centos.tar```
 
 ```docker load -i Documentum_Adminstrator_Centos.tar```
 
-```docker login -u user -p token docker-registry-default.apps.fortnebula.com```
+```docker login -u user -p token $REG_HOST```
 
-```docker tag 93ca8e54e48e docker-registry-default.apps.fortnebula.com/documentum/contentserver_centos:7.3.0000.0214```
+```docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214```
 
-```docker push docker-registry-default.apps.fortnebula.com/documentum/contentserver_centos:7.3.0000.0214```
+```docker push $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214```
 
-```docker tag 942c0df3f583 docker-registry-default.apps.fortnebula.com/bktest/da_centos:7.3.0000.0074```
+```docker tag 942c0df3f583 $REG_HOST/$PROJ/da_centos:7.3.0000.0074```
 
-```docker push docker-registry-default.apps.fortnebula.com/bktest/da_centos:7.3.0000.0074```
+```docker push $REG_HOST/$PROJ/da_centos:7.3.0000.0074```
 
 Confirm the image streams were created.
 
@@ -102,7 +106,7 @@ oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node
 2) Add the ```privileged scc``` to the project. This also requires a patch to the deployment configuration. Until I work out the patch
 command, the command and changes to the yaml are:
 
-```oc oadm policy add-scc-to-user privileged -z default -n documentum```
+```oc oadm policy add-scc-to-user privileged -z default -n $PROJ```
 ```
 spec:
       containers:
