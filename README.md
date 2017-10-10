@@ -8,6 +8,15 @@ PROJ=documentum
 oc new-project $PROJ
 oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 ```
+
+The content server installation scripts want to run ```rngd -b -r /dev/urandom -o /dev/random``` to increase the kernel entropy. As far as I
+can tell, this requires running the pod in privileged mode (see notes below). The other option, which I've verified does work, is to pin all 
+pods in the project to a given application node by patching the deployment configuration then running the above ```rngd``` command on that host.
+
+```
+oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=<your-app-node-name>"}}}'
+```
+
 ### Create the applications.
 
 #### Push the images and create the image streams.
@@ -73,33 +82,23 @@ oc new-app da -p DOCBROKER_IP={DOCBROKER_IP}
 
 ### Notes
 
-#### Lack of entropy work around
+#### Running with a privileged SCC.
 
-The content server installation scripts try to run ```rngd -b -r /dev/urandom -o /dev/random``` to increase the kernel entropy. As far as I
-can tell, this requires full container privileges. I've tried the
-following work arounds in OpenShift.
+To run with the ```privileged scc```, add the scc to the project's default service account then patch the deployment configuration as follows. 
 
-1) Pin all pods in the project to a given host by patching the 
-deployment configuration then run ```rngd``` on that host. I've confirmed this works.
-
-```
-oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=ocpnode-1.fortnebula.com"}}}'
-```
-
-2) Add the ```privileged scc``` to the project. This also requires a patch to the deployment configuration. Until I work out the patch
-command, the command and changes to the yaml are:
 
 ```oc oadm policy add-scc-to-user privileged -z default -n $PROJ```
+
+Until I work out the patch command, the changes to the deploymenmt configuration yaml code snippet is:
+
 ```
 spec:
       containers:
-      - image: 172.30.23.146:5000/documentum/...
-        imagePullPolicy: Always
-        name: myapp
-        ports:
-        - containerPort: 8080
-          protocol: TCP
-        resources: {}
+      - image: ...
+        ...
+        ...
+        ...
+        ...
         securityContext:
           privileged: true
         terminationMessagePath: /dev/termination-log
