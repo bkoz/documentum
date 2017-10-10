@@ -16,23 +16,15 @@ oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 
 After exposing the OpenShift internal registry, use an external Docker client to load, tag 
 and push the Documentum images to the OpenShift registry. This will create the necessary 
-OpenShift image streams.
+OpenShift image streams. Here is an example.
 
 ```REG_HOST=docker-registry-default.apps.fortnebula.com```
 
 ```docker load -i Contentserver_Centos.tar```
-
-```docker load -i Documentum_Adminstrator_Centos.tar```
-
 ```docker login -u user -p token $REG_HOST```
-
 ```docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214```
-
 ```docker push $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214```
 
-```docker tag 942c0df3f583 $REG_HOST/$PROJ/da_centos:7.3.0000.0074```
-
-```docker push $REG_HOST/$PROJ/da_centos:7.3.0000.0074```
 
 Confirm the image streams were created.
 
