@@ -14,7 +14,7 @@ oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 
 The content server installation scripts want to run```rngd -b -r /dev/urandom -o /dev/random```to increase the kernel entropy. As far as I
 can tell, this requires running the pod in privileged mode (see notes below). The other option, which I've verified does work, is to pin all 
-pods in the project to a given application node by patching the deployment configuration then running the above```rngd```command on that host.
+pods in the project to a given application node by patching the deployment configuration then run the above```rngd```command on that host.
 
 ```
 oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=<your-app-node-name>"}}}'
