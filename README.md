@@ -16,9 +16,8 @@ After exposing the OpenShift internal registry, use an external Docker client to
 and push the Documentum images to the OpenShift registry. This will create the necessary 
 OpenShift image streams. Here is an example.
 
-```REG_HOST=docker-registry-default.apps.fortnebula.com```
-
 ```
+REG_HOST=docker-registry-default.apps.fortnebula.com
 docker load -i Contentserver_Centos.tar
 docker login -u user -p token $REG_HOST
 docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
@@ -42,7 +41,6 @@ da_centos              172.30.23.146:5000/documentum/da_centos              7.3.
 Wait for the postgres pod to become ready.
 
 ``` oc get pods```
-
 ```
 NAME                 READY     STATUS    RESTARTS   AGE
 postgres-1-2p143     1/1       Running   0          1m
@@ -52,9 +50,6 @@ Create a directory with the proper ownership and permissions.
 
 ```
 PG_POD_NAME=`oc get pods --selector=app=postgres --output=custom-columns=NAME:.metadata.name --no-headers`
-```
-
-```
 oc rsh $PG_POD_NAME mkdir /var/lib/postgresql/data/db_centdb_dat.dat
 oc rsh $PG_POD_NAME chown -R postgres:postgres /var/lib/postgresql/data/db_centdb_dat.dat
 oc rsh $PG_POD_NAME chmod 777 /var/lib/postgresql/data/db_centdb_dat.dat
@@ -64,20 +59,17 @@ oc rsh $PG_POD_NAME ls -ld /var/lib/postgresql/data/db_centdb_dat.dat
 
 ```
 PG_POD_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY:.status.podIP --no-headers`
-```
-```
 oc create -f cs.yaml
 oc new-app documentum -p EXTERNALDB_IP=$PG_POD_IP -p EXTERNAL_IP=127.0.0.1
 ```
 
 #### Create the DA Server
 
-```oc create -f da.yaml```
 ```
+oc create -f da.yaml
 DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READY:.status.podIP --no-headers`
+oc new-app da -p DOCBROKER_IP={DOCBROKER_IP}
 ```
-
-```oc new-app da -p DOCBROKER_IP={DOCBROKER_IP}```
 
 ### Notes
 
