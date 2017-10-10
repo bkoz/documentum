@@ -1,5 +1,7 @@
 # How I deployed OpenText Documentum on OpenShift 
-## This write is not complete - definitely a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. or OpenText.
+
+## This README is not fully proof read - definitely a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. nor OpenText, Inc.
+
 ### Create the OpenShift project and grant privileges
 ```
 oc new-project documentum
@@ -86,7 +88,7 @@ DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READ
 
 #### Lack of entropy work around
 
-The content server installtion scripts try to run ```rngd -b -r /dev/urandom -o /dev/random``` to increase the kernel entropy. As far as I
+The content server installation scripts try to run ```rngd -b -r /dev/urandom -o /dev/random``` to increase the kernel entropy. As far as I
 can tell, this requires full container privileges. I've tried the
 following work arounds in OpenShift.
 
@@ -104,7 +106,7 @@ command, the command and changes to the yaml are:
 ```
 spec:
       containers:
-      - image: 172.30.23.146:5000/documentum/myapp@sha256:46f4312ecef330ab4d28ccc6f18e5f72318349148da15f4dccc61f84f34f0723
+      - image: 172.30.23.146:5000/documentum/...
         imagePullPolicy: Always
         name: myapp
         ports:
