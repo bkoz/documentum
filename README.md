@@ -6,9 +6,9 @@
 ```
 PROJ=documentum
 
-oc new-project documentum
+oc new-project $PROJ
 
-oc adm policy add-scc-to-user anyuid -z default -n documentum
+oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 ```
 ### Create the applications.
 
