@@ -1,6 +1,6 @@
-# How I deployed OpenText Documentum on OpenShift (not complete nor tested - definitely a work in progress)
-## This represents my notes from a project and is not a supported document from Red Hat, Inc. or OpenText.
-### Create the OpenShift project
+# How I deployed OpenText Documentum on OpenShift 
+## This write is not complete - definitely a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. or OpenText.
+### Create the OpenShift project and grant privileges
 ```
 oc new-project documentum
 
@@ -19,22 +19,21 @@ to the OpenShift registry. This will create the necessary OpenShift image stream
 
 ```docker login -u user -p token docker-registry-default.apps.fortnebula.com```
 
-```docker tag 93ca8e54e48e docker-registry-default.apps.fortnebula.com/bkttest/contentserver_centos:7.3.0000.0214```
+```docker tag 93ca8e54e48e docker-registry-default.apps.fortnebula.com/documentum/contentserver_centos:7.3.0000.0214```
 
-```docker push docker-registry-default.apps.fortnebula.com/bkttest/contentserver_centos:7.3.0000.0214```
+```docker push docker-registry-default.apps.fortnebula.com/documentum/contentserver_centos:7.3.0000.0214```
 
 ```docker tag 942c0df3f583 docker-registry-default.apps.fortnebula.com/bktest/da_centos:7.3.0000.0074```
 
 ```docker push docker-registry-default.apps.fortnebula.com/bktest/da_centos:7.3.0000.0074```
 
-Confirm the image stream were created.
+Confirm the image streams were created.
 
 ```oc get is```
 ```
 NAME                   DOCKER REPO                                       TAGS            UPDATED
-contentserver_centos   172.30.23.146:5000/bkttest/contentserver_centos   7.3.0000.0214   3 minutes ago
-da_centos              172.30.23.146:5000/bkttest/da_centos              7.3.0000.0074   44 seconds ago
-postgres               172.30.23.146:5000/bkttest/postgres               9.6.1           43 minutes ago
+contentserver_centos   172.30.23.146:5000/documentum/contentserver_centos   7.3.0000.0214   3 minutes ago
+da_centos              172.30.23.146:5000/documentum/da_centos              7.3.0000.0074   44 seconds ago
 ```
 
 #### Create the postgresql database
@@ -45,7 +44,7 @@ Wait for the postgres pod to become ready (READY = 1/1)
 
 ``` oc get pods```
 
-Once the postgresql pod is ready, a directory with the proper permissions must be created.
+Create a directory with the proper ownership and permissions.
 
 ```
 PG_POD_NAME=`oc get pods --selector=app=postgres --output=custom-columns=NAME:.metadata.name --no-headers`
@@ -80,6 +79,8 @@ DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READ
 ```oc new-app dacentos -p DOCBROKER_IP={DOCBROKER_IP}```
 
 ```oc rollout latest dc/dacentos```
+
+```oc expose service dacentos --path=/da```
 
 ### Notes
 
