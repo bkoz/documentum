@@ -69,7 +69,7 @@ oc rsh $PG_POD_NAME ls -ld /var/lib/postgresql/data/db_centdb_dat.dat
 ```
 PG_POD_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY:.status.podIP --no-headers`
 oc create -f cs.yaml
-oc new-app documentum -p EXTERNALDB_IP=$PG_POD_IP -p EXTERNAL_IP=127.0.0.1
+oc new-app documentum -p EXTERNALDB_IP=$PG_POD_IP -p EXTERNAL_IP=<your-app-nodes-ip-address>
 ```
 
 #### Create the DA Server
