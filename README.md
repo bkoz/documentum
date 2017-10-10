@@ -14,8 +14,9 @@ oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 
 #### Push the images and create the image streams.
 
-Using an external Docker client, load, tag and push the Documentum images
-to the OpenShift registry. This will create the necessary OpenShift image streams.
+After exposing the OpenShift internal registry, use an external Docker client to load, tag 
+and push the Documentum images to the OpenShift registry. This will create the necessary 
+OpenShift image streams.
 
 ```REG_HOST=docker-registry-default.apps.fortnebula.com```
 
