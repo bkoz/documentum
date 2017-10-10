@@ -114,8 +114,6 @@ objects:
             value: "false"
           - name: USE_EXISTING_DATABASE_ACCOUNT
             value: "false"
-          image: 172.30.23.146:5000/documentum/contentserver_centos
-          imagePullPolicy: IfNotPresent
           name: documentum
           ports:
           - containerPort: 8489
@@ -158,7 +156,7 @@ objects:
         from:
           kind: ImageStreamTag
           name: contentserver_centos:7.3.0000.0214
-          namespace: documentum
+          namespace: bkttest
       type: ImageChange
 parameters:
   - name: EXTERNALDB_IP

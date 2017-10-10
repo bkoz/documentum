@@ -74,8 +74,6 @@ PG_POD_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY:.st
 
 ```oc new-app documentum -p EXTERNALDB_IP=$PG_POD_IP -p EXTERNAL_IP=127.0.0.1```
 
-```oc rollout latest dc/documentum```
-
 #### Create the DA Server
 
 ```oc create -f da.yaml```
@@ -83,9 +81,7 @@ PG_POD_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY:.st
 DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READY:.status.podIP --no-headers`
 ```
 
-```oc new-app dacentos -p DOCBROKER_IP={DOCBROKER_IP}```
-
-```oc rollout latest dc/dacentos```
+```oc new-app da -p DOCBROKER_IP={DOCBROKER_IP}```
 
 ```oc expose service dacentos --path=/da```
 

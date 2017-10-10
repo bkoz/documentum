@@ -56,8 +56,6 @@ objects:
             value: centdb
           - name: PRESETS_PREFERENCES_USER_PASSWORD
             value: webtop
-          image: 172.30.23.146:5000/bkttest/da_centos@sha256:8cdd79d416ac698c8112cc310ea50bb02ee0ab974d8908c8a0815881bb610562
-          imagePullPolicy: IfNotPresent
           name: dacentos
           ports:
           - containerPort: 8080
@@ -82,28 +80,20 @@ objects:
           name: da_centos:7.3.0000.0074
           namespace: bkttest
       type: ImageChange
-  parameters:
-  - name: DOCBROKER_IP
-    displayName: DocBroker Pod IP
-    description: IP Address of the Content Server pod
-    value: NULL
-    required: true
 - apiVersion: v1
   kind: Service
   metadata:
-    annotations:
-      openshift.io/generated-by: OpenShiftNewApp
     creationTimestamp: null
     labels:
       app: dacentos
     name: dacentos
   spec:
     ports:
-    - name: 8080-tcp
+    - name: port-1
       port: 8080
       protocol: TCP
       targetPort: 8080
-    - name: 8443-tcp
+    - name: port-2
       port: 8443
       protocol: TCP
       targetPort: 8443
@@ -112,9 +102,9 @@ objects:
       deploymentconfig: dacentos
     sessionAffinity: None
     type: ClusterIP
-    apiVersion: v1
-kind: Template
-metadata:
-  creationTimestamp: null
-  name: dacentos
-objects:
+parameters:
+  - name: DOCBROKER_IP
+    displayName: DocBroker Pod IP
+    description: IP Address of the Content Server pod
+    value: NULL
+    required: true
