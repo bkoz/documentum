@@ -51,6 +51,11 @@ Wait for the postgres pod to become ready (READY = 1/1)
 
 ``` oc get pods```
 
+```
+NAME                 READY     STATUS    RESTARTS   AGE
+postgres-1-2p143     1/1       Running   0          1m
+```
+
 Create a directory with the proper ownership and permissions.
 
 ```
@@ -82,8 +87,6 @@ DOCBROKER_IP=`oc get pods --selector=app=documentum --output=custom-columns=READ
 ```
 
 ```oc new-app da -p DOCBROKER_IP={DOCBROKER_IP}```
-
-```oc expose service dacentos --path=/da```
 
 ### Notes
 
