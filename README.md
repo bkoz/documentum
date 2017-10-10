@@ -47,7 +47,7 @@ da_centos              172.30.23.146:5000/documentum/da_centos              7.3.
 
 ```oc new-app docker.io/postgres:9.6.1 -e POSTGRESQL_PASSWORD=password```
 
-Wait for the postgres pod to become ready (```READY = 1/1```)
+Wait for the postgres pod to become ready(```1/1```)
 
 ``` oc get pods```
 
