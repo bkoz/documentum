@@ -77,6 +77,13 @@ EXTERNALDB_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY
 oc create -f cs.yaml
 oc new-app documentum -p EXTERNALDB_IP=$EXTERNALDB_IP -p EXTERNAL_IP=<your-app-nodes-ip-address>
 ```
+If you need to examine logs or debug the installation, use```oc rsh``` to connect to the pod's
+namespace.
+
+```
+CS_POD_NAME=`oc get pods --selector=app=documentum --output=custom-columns=NAME:.metadata.name --no-headers`
+oc rsh $CS_POD_NAME bash
+```
 
 #### Create the DA Server
 
