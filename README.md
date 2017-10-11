@@ -2,9 +2,9 @@
 
 ## This README is a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. nor OpenText, Inc.
 
-### Create the OpenShift project and grant it's default service account the```anyuid```scc.
+### Create the OpenShift project 
 
-All```oc adm```commands need to be run by the OpenShift cluster administrator.
+Grant the project's default service account the```anyuid```scc. All```oc adm```commands need to be run by the OpenShift cluster administrator.
 
 ```
 PROJ=documentum
@@ -13,7 +13,7 @@ oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 ```
 
 The content server installation scripts want to run```rngd -b -r /dev/urandom -o /dev/random```to increase the kernel entropy. 
-As far as I can tell, this requires running the pod in privileged mode (see notes below). The other option, which I've verified does work, is to pin all pods in the project to a given application node by patching the deployment configuration's```node-selector```with the hostname then run the above```rngd```command on that host. This approach also satisfies the requirement that the container host IP (```EXTERNAL_IP```) be passed into the content server pod.
+As far as I can tell, this requires running the pod in privileged mode (see notes at the end). The following approach, which I've verified does work, is to pin all pods in the project to a given application node by patching the deployment configuration's```node-selector```with the hostname then run the above```rngd```command on that host. This approach also satisfies the requirement that the container host IP (```EXTERNAL_IP```) be passed into the content server pod before the installer scripts are run.
 
 Example patch command
 ```
