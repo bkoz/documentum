@@ -12,26 +12,25 @@ oc new-project $PROJ
 oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 ```
 
-The content server installation scripts want to run```rngd -b -r /dev/urandom -o /dev/random```to increase the kernel entropy. As far as I
-can tell, this requires running the pod in privileged mode (see notes below). The other option, which I've verified does work, is to pin all 
-pods in the project to a given application node by patching the deployment configuration then run the above```rngd```command on that host.
-This approach also satisfies the requirement that the container host IP (```EXTERNAL_IP```) be passed into the content server pod.
+The content server installation scripts want to run```rngd -b -r /dev/urandom -o /dev/random```to increase the kernel entropy. 
+As far as I can tell, this requires running the pod in privileged mode (see notes below). The other option, which I've verified does work, is to pin all pods in the project to a given application node by patching the deployment configuration's```node-selector```with the hostname then run the above```rngd```command on that host. This approach also satisfies the requirement that the container host IP (```EXTERNAL_IP```) be passed into the content server pod.
 
+Example patch command
 ```
-oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=<your-app-node-name>"}}}'
+oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=<YOUR-APP-NODE-NAME>"}}}'
 ```
 
 ### Create the applications.
 
 #### Push the images and create the image streams.
 
-After exposing the OpenShift internal registry, use an external Docker client to load, tag 
-and push the Documentum images to the OpenShift registry. This will create the necessary 
-OpenShift image streams. Here is an example.
+Once a user has been [configured to access the OpenShift internal registry](https://docs.openshift.com/container-platform/3.6/install_config/registry/accessing_registry.html#access-user-prerequisites), 
+use an external Docker client to push the Documentum images to the OpenShift registry. This will create 
+the necessary OpenShift image streams. Below is an example.
 
 ```
 MYTOKEN=`oc whoami -t`
-REG_HOST=docker-registry-default.apps.fortnebula.com
+REG_HOST=docker-registry-default.apps.mydomain.com
 docker load -i Contentserver_Centos.tar
 docker login -u user -p $MYTOKEN $REG_HOST
 docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
@@ -86,6 +85,10 @@ oc new-app da -p DOCBROKER_IP=$DOCBROKER_IP
 ```
 
 ### Notes
+
+#### Platform specifics
+This test was performed using OpenShift v3.6 running on RHEL Server 7.4. Using RHEL Atomic host was not successful. The content server installation scripts produced errors that 
+are being investigated.
 
 #### Running with a privileged SCC.
 
