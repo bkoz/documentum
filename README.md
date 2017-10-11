@@ -29,10 +29,10 @@ use an external Docker client to push the Documentum images to the OpenShift reg
 the necessary OpenShift image streams. Below is an example.
 
 ```
-MYTOKEN=`oc whoami -t`
+TOKEN=`oc whoami -t`
 REG_HOST=docker-registry-default.apps.mydomain.com
 docker load -i Contentserver_Centos.tar
-docker login -u user -p $MYTOKEN $REG_HOST
+docker login -u user -p $TOKEN $REG_HOST
 docker tag 93ca8e54e48e $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
 docker push $REG_HOST/$PROJ/contentserver_centos:7.3.0000.0214
 ```
