@@ -20,9 +20,9 @@ Example patch command
 oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=<YOUR-APP-NODE-NAME>"}}}'
 ```
 
-### Create the applications.
+### Create the OpenShift objects.
 
-#### Push the images and create the image streams.
+#### Push the container images and create the image streams.
 
 Once a user has been [configured to access the OpenShift internal registry](https://docs.openshift.com/container-platform/3.6/install_config/registry/accessing_registry.html#access-user-prerequisites), 
 use an external Docker client to push the Documentum images to the OpenShift registry. This will create 
