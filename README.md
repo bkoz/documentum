@@ -70,6 +70,8 @@ oc rsh $PG_POD_NAME ls -ld /var/lib/postgresql/data/db_centdb_dat.dat
 ```
 #### Create the Content Server
 
+Set```EXTERNAL_IP```to the IP of your app node.
+
 ```
 EXTERNALDB_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY:.status.podIP --no-headers`
 oc create -f cs.yaml
