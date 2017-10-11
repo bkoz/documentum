@@ -1,6 +1,9 @@
-# How I deployed OpenText Documentum on OpenShift 
+# Installing Documentum on OpenShift
 
-## This README is a work in progress. It represents my notes from a project and is not a supported document from Red Hat, Inc. nor OpenText, Inc.
+## This is not a supported procedure from Red Hat, Inc. nor OpenText, Inc.
+
+The README and template files represent my notes to deploy the Documentum content and 
+admin servers on OpenShift. 
 
 ### Create the OpenShift project 
 
