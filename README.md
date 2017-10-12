@@ -18,9 +18,9 @@ oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 The content server installation scripts want to run `rngd -b -r /dev/urandom -o /dev/random` to increase the kernel entropy. 
 As far as I can tell, this requires running the pod in privileged mode (see notes at the end). The following approach, which I've verified does work, is to pin all pods in the project to a given application node by patching the deployment configuration's `node-selector` with the hostname then run the above `rngd` command on that host. This approach also satisfies the requirement that the container host  `EXTERNAL_IP` be passed into the content server pod before the installer scripts are run.
 
-Example patch command
+Example patch command (set APP-NODE-HOSTNAME to match your environment):
 ```
-oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=<YOUR-APP-NODE-NAME>"}}}'
+oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node-selector": "kubernetes.io/hostname=APP-NODE-HOSTNAME"}}}'
 ```
 
 ### Create the OpenShift objects.
@@ -29,7 +29,7 @@ oc patch namespace documentum -p '{"metadata":{"annotations":{"openshift.io/node
 
 Once a user has been [configured to access the OpenShift internal registry](https://docs.openshift.com/container-platform/3.6/install_config/registry/accessing_registry.html#access-user-prerequisites), 
 use an external Docker client to push the Documentum images to the OpenShift registry. This will create 
-the necessary OpenShift image streams. Below is an example.
+the necessary OpenShift image streams. Below is an example (set `REG_HOST` to match your environment).
 
 ```
 TOKEN=`oc whoami -t`
