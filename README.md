@@ -7,7 +7,7 @@ admin servers on OpenShift.
 
 ### Create the OpenShift project 
 
-Grant the project's default service account the```anyuid```scc. All```oc adm```commands need to be run by the OpenShift cluster administrator.
+Grant the project's default service account the `anyuid` scc. All `oc adm` commands need to be run by the OpenShift cluster administrator.
 
 ```
 PROJ=documentum
@@ -15,8 +15,8 @@ oc new-project $PROJ
 oc adm policy add-scc-to-user anyuid -z default -n $PROJ
 ```
 
-The content server installation scripts want to run```rngd -b -r /dev/urandom -o /dev/random```to increase the kernel entropy. 
-As far as I can tell, this requires running the pod in privileged mode (see notes at the end). The following approach, which I've verified does work, is to pin all pods in the project to a given application node by patching the deployment configuration's```node-selector```with the hostname then run the above```rngd```command on that host. This approach also satisfies the requirement that the container host IP (```EXTERNAL_IP```) be passed into the content server pod before the installer scripts are run.
+The content server installation scripts want to run `rngd -b -r /dev/urandom -o /dev/random` to increase the kernel entropy. 
+As far as I can tell, this requires running the pod in privileged mode (see notes at the end). The following approach, which I've verified does work, is to pin all pods in the project to a given application node by patching the deployment configuration's `node-selector` with the hostname then run the above `rngd` command on that host. This approach also satisfies the requirement that the container host  `EXTERNAL_IP` be passed into the content server pod before the installer scripts are run.
 
 Example patch command
 ```
@@ -73,14 +73,14 @@ oc rsh $PG_POD_NAME ls -ld /var/lib/postgresql/data/db_centdb_dat.dat
 ```
 #### Create the Content Server
 
-Set```EXTERNAL_IP```to the IP of your app node.
+Set `EXTERNAL_IP` to the IP of your app node.
 
 ```
 EXTERNALDB_IP=`oc get pods --selector=app=postgres --output=custom-columns=READY:.status.podIP --no-headers`
 oc create -f cs.yaml
 oc new-app documentum -p EXTERNALDB_IP=$EXTERNALDB_IP -p EXTERNAL_IP=<your-app-nodes-ip-address>
 ```
-If you need to examine logs or debug the installation, use```oc rsh``` to connect to the pod's
+If you need to examine logs or debug the installation, use `oc rsh`  to connect to the pod's
 namespace.
 
 ```
@@ -104,7 +104,7 @@ are being investigated.
 
 #### Running with a privileged SCC.
 
-To run with the```privileged scc```, add the scc to the project's default service account then patch the deployment configuration as follows. 
+To run with the `privileged scc`, add the scc to the project's default service account then patch the deployment configuration as follows. 
 
 
 ```oc oadm policy add-scc-to-user privileged -z default -n $PROJ```
